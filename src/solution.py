@@ -47,14 +47,3 @@ def getProbability(n):
             leaves += 1
     return str(graduation_day) + "/" + str(leaves)
 
-
-if __name__ == "__main__":
-    # tests
-    assert getProbability(5) == "14/29"
-    assert getProbability(10) == "372/773"
-    print("Basic tests passed")
-    assert getProbability(1) == "1/2"
-    assert getProbability(2) == "2/4"
-    assert getProbability(3) == "4/8"
-    assert getProbability(0) == "Invalid input value, must be greater than or equal to 1"
-    print("Additional tests passed")
