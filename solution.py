@@ -12,10 +12,8 @@ def isAllowed(binary):
 
 def getCombinations(n):
     ''' Gets all n digit binary numbers'''
-    result = []
     for i in range(1 << n):
-        result.append(bin(i).replace('0b', '').rjust(n, '0'))
-    return result
+        yield bin(i).replace('0b', '').rjust(n, '0')
 
 def getProbability(n):
     ''' Returns string representation of fraction of probablity that a student witll miss graduation'''
@@ -27,13 +25,12 @@ def getProbability(n):
     if n == 0:
         return "Invalid input value, must be greater than or equal to 1"
     if  n < 4:
-        return str(2 ** (n - 1)) + '/' + str(2 ** n)
+        return str(1 << (n - 1)) + '/' + str(1 << n)
     leaves = 0
     graduation_day = 0 # count of combinations with last digit 0
-    record = getCombinations(n)
-    for value in record:
-        if isAllowed(value):
-            if value[-1] == '0':
+    for record in getCombinations(n):
+        if isAllowed(record):
+            if record[-1] == '0':
                 graduation_day += 1
             leaves += 1
     return str(graduation_day) + "/" + str(leaves)
