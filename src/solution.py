@@ -12,15 +12,20 @@ def isAllowed(binary):
             count = 0
     return consecutive_zeroes < 4
 
+def backtrack(digits, k, path, result):
+    if len(path) == k:
+        result.append(path)
+        return
+    for i in range(2):
+        backtrack(digits, k, path + [digits[i]], result)
 
 def getCombinations(n):
     """
     Gets all n digit binary numbers
     """
-    record = []
-    for i in range(1 << n):
-        record.append(bin(i).replace("0b", "").rjust(n, "0"))
-    return record
+    result = []
+    backtrack(['0', '1'], n, [], result)
+    return result
 
 
 def getProbability(n):
