@@ -1,33 +1,3 @@
-def isAllowed(binary):
-    """
-    Gets a number in binary and returns whether number of consecutive 0s exceed or equal 4
-    """
-    consecutive_zeroes = 0
-    count = 0
-    for char in binary:
-        if char == "0":
-            count += 1
-            consecutive_zeroes = max(consecutive_zeroes, count)
-        else:
-            count = 0
-    return consecutive_zeroes < 4
-
-def backtrack(digits, k, path, result):
-    if len(path) == k:
-        result.append(path)
-        return
-    for i in range(2):
-        backtrack(digits, k, path + [digits[i]], result)
-
-def getCombinations(n):
-    """
-    Gets all n digit binary numbers
-    """
-    result = []
-    backtrack(['0', '1'], n, [], result)
-    return result
-
-
 def getProbability(n):
     """
     Returns probablity of student missing graduation for given n number of days
@@ -44,12 +14,29 @@ def getProbability(n):
         return "Invalid input value, must be greater than or equal to 1"
     if n < 4:
         return str(1 << (n - 1)) + "/" + str(1 << n)
-    leaves = 0
-    graduation_day = 0  # count of combinations with last digit 0
-    records = getCombinations(n)
-    for record in records:
-        if isAllowed(record):
-            if record[-1] == "0":
-                graduation_day += 1
-            leaves += 1
-    return str(graduation_day) + "/" + str(leaves)
+    # Let f(n) be the function which determines the number of combinations
+    # which are not allowed. For n < 4 there are no combinations which
+    # are not allowed hence f(0),f(1),f(2) = 0 
+    # for n = 4 we only have 1 combination '0000' which is not allowed
+    # hence f(4) = 1, for n = 5 onwards we then use the following:
+    # f(n) = (2 ** (n - 4)) + f(n - 4) + f(n - 3) + f(n - 2) + f(n - 1)
+    # we use 2 ^ (n -4) since we cannot allow 4 consecutive 0s and since
+    # we would also need to consider the previous iterations
+    f = [0 for _ in range(n + 1)]
+    f[0] = None
+    f[4] = 1
+    for i in range(5, n + 1):
+        f[i] = (2 ** (i - 4)) + f[i - 4] + f[i - 3] + f[i - 2] + f[i - 1]
+    allowed = [0 for _ in range(n + 1)]
+    allowed[0] = None
+    for i in range(1, n + 1):
+        allowed[i] = (2 ** i) - f[i]
+    graduation_miss = allowed[n] - allowed[n - 1] 
+    # we do this to avoid overcounting. Suppose we did not have the constraint for 4 consecutive 0s
+    # this would just be 2 ^ (n - 1)
+    return str(graduation_miss) + "/" + str(allowed[n])
+
+if __name__ == "__main__":
+    assert getProbability(5) == "14/29"
+    assert getProbability(10) == "372/773"
+    print("Tests passed")

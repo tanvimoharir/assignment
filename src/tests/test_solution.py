@@ -1,22 +1,6 @@
 import pytest
 
-from src.solution import isAllowed, getCombinations, getProbability
-
-
-class TestSolutionUnits:
-    # unit tests
-    @pytest.mark.parametrize("binary", ["0000", "0000001", "0100000"])
-    def test_leaves_not_allowed(self, binary):
-        assert isAllowed(binary) == False
-
-    @pytest.mark.parametrize("binary", ["0010", "11101"])
-    def test_allowed_leaves(self, binary):
-        assert isAllowed(binary) == True
-
-    @pytest.mark.parametrize("n, expected_length", [(2, 4), (3, 8)])
-    def test_combinations(self, n, expected_length):
-        result = getCombinations(n)
-        assert len(result) == expected_length
+from src.solution import getProbability
 
 
 class TestFunctionality:
